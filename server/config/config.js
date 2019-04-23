@@ -13,7 +13,7 @@ let urlDB;
 if (process.env.NODE_ENV === 'dev') {
     urlDB = 'mongodb://localhost:27017/cafe';
 } else {
-    urlDB = 'mongodb+srv://marce123:elmarce123@cluster0-tbnso.mongodb.net/cafe?retryWrites=true';
+    urlDB = process.env.MONGO_URI;
 }
 
 process.env.URLDB = urlDB; //Creamos una environtment, o variable global
