@@ -6,6 +6,8 @@ const _ = require('underscore');
 
 const Usuario = require('../models/usuario');
 
+const { verificaToken, verificaAdmin_Role } = require('../middlewares/autenticacion');
+
 const app = express();
 
 const bodyParser = require('body-parser');
@@ -14,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 
-app.get('/usuario', function(req, res) {
+app.get('/usuario', verificaToken, function(req, res) {
     //res.send('Hola mundo');
     let desde = req.query.desde || 0; //Si hay parametros opcionales, si no 0
     desde = Number(desde);
@@ -34,7 +36,7 @@ app.get('/usuario', function(req, res) {
                 });
             }
             //Contar
-            Usuario.count({ estado: true }, (err, conteo) => { //.count({google: true}) SI CONDICION =  DE .find
+            Usuario.countDocuments({ estado: true }, (err, conteo) => { //.count({google: true}) SI CONDICION =  DE .find
 
                 res.send({
                     ok: true,
@@ -44,13 +46,12 @@ app.get('/usuario', function(req, res) {
 
             });
 
-
         });
 
     // res.json('get usuario');
 });
 
-app.post('/usuario', function(req, res) { // /usuario
+app.post('/usuario', [verificaToken, verificaAdmin_Role], function(req, res) { // /usuario
     let body = req.body;
 
     let usuario = new Usuario({
@@ -80,7 +81,7 @@ app.post('/usuario', function(req, res) { // /usuario
 
 });
 
-app.put('/usuario/:id', function(req, res) { //UPDATE
+app.put('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) { //UPDATE
     let id = req.params.id;
     //res.json({ id });
 
@@ -112,7 +113,7 @@ app.put('/usuario/:id', function(req, res) { //UPDATE
 
 });
 
-app.delete('/usuario/:id', function(req, res) {
+app.delete('/usuario/:id', [verificaToken, verificaAdmin_Role], function(req, res) {
     //res.send('Hola mundo');
     //res.json('delete usuario');
     let id = req.params.id;
@@ -148,7 +149,7 @@ app.delete('/usuario/:id', function(req, res) {
             estado: false
         }
         // Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuarioBorrado) => {
-    Usuario.findByIdAndUpdate(id, cambiaEstado, { new: true }, (err, usuarioBorrado) => {
+    Usuario.findByIdAndUpdate(id, cambiaEstado, (err, usuarioBorrado) => {
 
         if (err) {
             return res.status(400).send({
