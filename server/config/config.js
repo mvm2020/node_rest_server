@@ -26,3 +26,7 @@ if (process.env.NODE_ENV === 'dev') {
 }
 
 process.env.URLDB = urlDB; //Creamos una environtment, o variable global
+
+//GOOGLE CLIENT ID
+
+process.env.CLIENT_ID = process.env.CLIENT_ID || '705520164585-biocdn6lqtuqpqmb9efelgp86ecpkgr4.apps.googleusercontent.com';

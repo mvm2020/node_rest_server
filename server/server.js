@@ -3,7 +3,14 @@
 require('./config/config');
 const mongoose = require('mongoose');
 const express = require('express');
+
+const path = require('path');
+
 const app = express();
+
+
+//Habilitar la carpeta public
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 //Configuración global de ruras
 app.use(require('./routes/index'));
