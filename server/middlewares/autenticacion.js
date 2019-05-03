@@ -52,7 +52,30 @@ let verificaAdmin_Role = (req, res, next) => {
 
 };
 
+let verificaTokenImg = (req, res, next) => {
+    //Del tipo {{url}}/imagen/productos/5cc3f046d310b931e8e0f543-811.jpg?token=!23456
+    let token = req.query.token;
+
+    jwt.verify(token, process.env.SEED, (err, decoded) => {
+
+        if (err) {
+            return res.status(401).send({
+                ok: false,
+                err: {
+                    message: 'No tiene autorización para acceder a esta página'
+                }
+            });
+        }
+
+        req.usuario = decoded.usuario;
+        next(); //Que se ejecute lo que sigue de la ruta donde se llama
+
+    });
+
+};
+
 module.exports = {
     verificaToken,
-    verificaAdmin_Role
+    verificaAdmin_Role,
+    verificaTokenImg
 }
